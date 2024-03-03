@@ -2,6 +2,7 @@ from services.db import make_connection, database
 from models.user import User
 from typing import List
 from models.album import Album
+from models.image import Image
 
 # Returns None if the user is not found
 def get_user_data(username):
@@ -66,6 +67,45 @@ def get_album_data(album_id):
         images = get_images(album.id)
         album.images = images
         return album
+    except Exception as e:
+        print(e)
+        return None
+    
+def get_images(album_id):
+    try:
+        connection = make_connection()
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT UbicacionBucket from {database}.Foto WHERE Album_UniqueID = '{album_id}'")
+        res = cursor.fetchall()
+        images = []
+        for image in res:
+            images.push({
+                "original": image,
+                "thumbnail": image
+            })
+        cursor.close()
+        connection.close()
+        return images
+    except Exception as e:
+        print(e)
+        return None
+    
+
+def get_past_photos(user_id):
+    try:
+        connection = make_connection()
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT UbicacionBucket from {database}.Foto WHERE Usuarios_UniqueID = '{user_id}'")
+        res = cursor.fetchall()
+        images = []
+        for image in res:
+            images.push({
+                "original": image,
+                "thumbnail": image
+            })
+        cursor.close()
+        connection.close()
+        return images
     except Exception as e:
         print(e)
         return None
