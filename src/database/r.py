@@ -1,0 +1,71 @@
+from services.db import make_connection, database
+from models.user import User
+from typing import List
+from models.album import Album
+
+# Returns None if the user is not found
+def get_user_data(username):
+    try:                
+        connection = make_connection()              
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM {}.Usuarios WHERE Nickname = '{}'".format(database, username))
+        users = cursor.fetchall()
+        user = User()
+        for u in users:
+            user.id = u[0]  # UniqueID
+            user.username = u[1]  # Nickname
+            user.fullname = u[2]  # NombreCompleto
+            user.mail = u[3]  # Correo
+            user.password = u[4]  # Password
+            user.s3Url = u[5]  # FotoActualUbiBucket
+            user.imageB64 = ''
+            user.newUsername = None
+            break                
+        cursor.close()
+        connection.close()
+        if user.id == None :            
+            return None
+        return user
+    except Exception as e:
+        print(e)
+        return None
+    
+
+def get_albums(user_id):
+    try:
+        connection = make_connection()
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM {database}.Album WHERE Usuario_UniqueID = '{user_id}'")
+        res = cursor.fetchall()
+        albums = []
+        for album in res:
+            albums.push(Album(album[0], album[1], album[2]))
+        cursor.close()
+        connection.close()
+        return albums
+    except Exception as e:
+        print(e)
+        return None
+    
+def get_album_data(album_id):
+    try:
+        connection = make_connection()
+        cursor = connection.cursor()
+        cursor.execute(f"SELECT * FROM {database}.Album WHERE UniqueID = '{album_id}'")
+        res = cursor.fetchall()
+        album = Album()
+        for a in res:
+            album.id = a[0]
+            album.title = a[1]
+            album.user_id = a[2]
+            break
+        cursor.close()
+        connection.close()
+        if album.id == None:
+            return None
+        images = get_images(album.id)
+        album.images = images
+        return album
+    except Exception as e:
+        print(e)
+        return None
