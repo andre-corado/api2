@@ -4,4 +4,13 @@ class Album():
         self.title = title
         self.user_id = user_id
         self.images = []
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'idUser': self.user_id,
+            'images': self.images
+        }
+    
     

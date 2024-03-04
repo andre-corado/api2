@@ -31,7 +31,7 @@ def get_user_data(username):
         return user
     except Exception as e:
         print(e)
-        return None
+        return e
     
 
 def get_albums(user_id):
@@ -49,8 +49,8 @@ def get_albums(user_id):
         connection.close()
         return albums
     except Exception as e:
-        print(e)
-        return None
+        print(e)        
+        return e
     
 def get_album_data(album_id):
     try:
@@ -69,13 +69,13 @@ def get_album_data(album_id):
         cursor.close()
         connection.close()
         if album.id == None:
-            return None
+            return album
         images = get_images(album.id)
         album.images = images
         return album
     except Exception as e:
         print(e)
-        return None
+        return e
     
 def get_images(album_id):
     try:
@@ -96,7 +96,7 @@ def get_images(album_id):
         return images
     except Exception as e:
         print(e)
-        return None
+        return e
     
 
 def get_past_photos(user_id):
@@ -105,7 +105,7 @@ def get_past_photos(user_id):
         if isinstance(connection, Exception):
             raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
-        cursor.execute(f"SELECT UbicacionBucket from {database}.Foto WHERE Usuarios_UniqueID = '{user_id}'")
+        cursor.execute(f"SELECT UbicacionBucket from {database}.FotosPasadasPerfil WHERE Usuarios_UniqueID = '{user_id}'")
         res = cursor.fetchall()
         images = []
         for image in res:
@@ -118,4 +118,4 @@ def get_past_photos(user_id):
         return images
     except Exception as e:
         print(e)
-        return None
+        return e
