@@ -43,7 +43,7 @@ async def new_user(request: Request):
     except Exception as e:  
         return JSONResponse(
             status_code=400,
-            content={"status": "400", "message": str(e)}
+            content={"status": 400, "message": str(e)}
         )
         
 
@@ -65,7 +65,7 @@ async def login_user(request: Request):
         return JSONResponse(
             status_code=200,
             content={
-                "status": "200",
+                "status": 200,
                 "message": "Usuario logueado exitosamente.",
                 "userData": user.dict()}
         )
@@ -95,10 +95,10 @@ async def update_user(request: Request):
             raise Exception("Error al actualizar el usuario.")
         return JSONResponse(
             status_code=200,
-            content={"status":"201" , "message": "Usuario actualizado exitosamente."}
+            content={"status": 201, "message": "Usuario actualizado exitosamente."}
         )
     except Exception as e:
         return JSONResponse(
             status_code=400,
-            content={"status": "400", "message": str(e)}
+            content={"status": 400, "message": str(e)}
         )
