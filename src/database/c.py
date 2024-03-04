@@ -84,5 +84,5 @@ def get_images(album_id):
         return images
     except Exception as e:
         print(e)
-        return None
+        return e
     
