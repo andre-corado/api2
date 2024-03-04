@@ -5,12 +5,16 @@ from controllers.user import is_valid_user
 from database.c import create_user
 from utils.md5 import encrypt
 
-login = APIRouter(prefix="/users")
+userRouter = APIRouter(prefix="/users")
 
 
-@login.post(path='/newUser')
+@userRouter.post(path='/newUser')
 # Post | /users/newUser | crea un nuevo usuario
 async def new_user(request: Request):
+    return JSONResponse(
+        status_code=200,
+        content={"message": "Usuario creado exitosamente."}
+    )
     try:
         data = await request.json()
         # Tratar de crear el usuario en tabla de RDS 
@@ -46,12 +50,19 @@ async def new_user(request: Request):
 
 
 
-@login.route('/login', methods=['POST'])
+@userRouter.post('/login')
 # Post | /users/login | devuelve toda la información del usuario que se loguea
-def login_user():
+async def login_user():
     return JSONResponse(
         status_code=200,
         content={"message": "Usuario logueado exitosamente."}
     )
 
 
+@userRouter.put('/update')
+# Put | /users/update | actualiza la información del usuario
+async def update_user():
+    return JSONResponse(
+        status_code=200,
+        content={"message": "Usuario actualizado exitosamente."}
+    )
