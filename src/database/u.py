@@ -5,6 +5,8 @@ from models.album import Album
 def save_updates_user(user:User):
     try:
         connection = make_connection()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         script = f"UPDATE {database}.Usuarios SET NombreCompleto = '{user.fullname}', Correo = '{user.mail}'"
         if user.imageB64:
@@ -24,6 +26,8 @@ def save_updates_user(user:User):
 def update_album_data(album:Album):
     try:
         connection = make_connection()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         cursor.execute(f"UPDATE {database}.Album SET Nombre = '{album.title}' WHERE UniqueID = '{album.id}'")
         connection.commit()

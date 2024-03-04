@@ -1,8 +1,10 @@
 from fastapi import Request, APIRouter
 from fastapi.responses import JSONResponse
 from models.user import User
-from controllers.user import is_valid_user
+from controllers.user import is_valid_user, is_valid_logindata, is_valid_updatedata
 from database.c import create_user
+from database.r import get_user_data
+from database.u import save_updates_user
 from utils.md5 import encrypt
 
 userRouter = APIRouter(prefix="/users")
@@ -10,11 +12,7 @@ userRouter = APIRouter(prefix="/users")
 
 @userRouter.post(path='/newUser')
 # Post | /users/newUser | crea un nuevo usuario
-async def new_user(request: Request):
-    return JSONResponse(
-        status_code=200,
-        content={"message": "Usuario creado exitosamente."}
-    )
+async def new_user(request: Request):    
     try:
         data = await request.json()
         # Tratar de crear el usuario en tabla de RDS 
@@ -28,8 +26,9 @@ async def new_user(request: Request):
                 fullname=data.get('fullname'),
                 imageB64=data.get('imageB64')
             )
-            if not create_user(user):
-                raise Exception("Error al crear el usuario.")       
+            e = create_user(user)
+            if e is not None:
+                raise Exception(e)     
                 
         # Si no hay errores
         return JSONResponse(
@@ -44,25 +43,62 @@ async def new_user(request: Request):
     except Exception as e:  
         return JSONResponse(
             status_code=400,
-            content={"error": str(e)}
+            content={"status": "400", "message": str(e)}
         )
         
 
-
-
 @userRouter.post('/login')
 # Post | /users/login | devuelve toda la información del usuario que se loguea
-async def login_user():
-    return JSONResponse(
-        status_code=200,
-        content={"message": "Usuario logueado exitosamente."}
-    )
+async def login_user(request: Request):
+    try:
+        res = await request.json()
+        username = res.get('username')
+        password = res.get('password')
+        if not is_valid_logindata(username, password):
+            raise Exception("Datos de login incorrectos.")
+        user = get_user_data(username)
+        if user is None:
+            raise Exception("Usuario no encontrado.")
+        if user.password != encrypt(password):
+            raise Exception("Contraseña incorrecta.")
+        user.password = None ## No devolver la contraseña
+        return JSONResponse(
+            status_code=200,
+            content={
+                "status": "200",
+                "message": "Usuario logueado exitosamente.",
+                "userData": user.dict()}
+        )
+        
+    except Exception as e:
+        return JSONResponse(
+            status_code=401,
+            content={"status": "401", "message": str(e)}
+        )
 
 
 @userRouter.put('/update')
 # Put | /users/update | actualiza la información del usuario
-async def update_user():
-    return JSONResponse(
-        status_code=200,
-        content={"message": "Usuario actualizado exitosamente."}
-    )
+async def update_user(request: Request):
+    try:
+        data = await request.json()
+        user = User(
+            username=data.get('username'),
+            fullname=data.get('fullname'),
+            mail=data.get('mail'),
+            imageB64=data.get('imageB64'),
+            newUsername=data.get('newUsername')
+        )
+        if is_valid_updatedata(data) != True:
+            raise Exception("Datos de actualización incorrectos, faltan campos.")
+        if save_updates_user(user):
+            raise Exception("Error al actualizar el usuario.")
+        return JSONResponse(
+            status_code=200,
+            content={"status":"201" , "message": "Usuario actualizado exitosamente."}
+        )
+    except Exception as e:
+        return JSONResponse(
+            status_code=400,
+            content={"status": "400", "message": str(e)}
+        )

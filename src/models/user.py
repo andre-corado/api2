@@ -13,12 +13,11 @@ class User():
         return "User:\t" + str(self.toDict()) + "\n"
 
     def toDict(self):
-        return {
-            "id": self.id,
+        return {            
             "username": self.username,
-            "password": self.password,
             "fullname": self.fullname,
             "mail": self.mail,
+            "password": self.password,
             "s3Url": self.s3Url,
             "imageB64": self.imageB64,
             "newUsername": self.newUsername

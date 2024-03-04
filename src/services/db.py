@@ -16,6 +16,5 @@ def make_connection():
             password=os.getenv("DB_PASSWORD"),
             database=database
         )
-    except Exception as e:
-        return e    
- 
+    except Exception as e:        
+        return e

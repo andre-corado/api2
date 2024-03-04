@@ -8,6 +8,8 @@ from models.image import Image
 def get_user_data(username):
     try:                
         connection = make_connection()              
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         cursor.execute("SELECT * FROM {}.Usuarios WHERE Nickname = '{}'".format(database, username))
         users = cursor.fetchall()
@@ -35,6 +37,8 @@ def get_user_data(username):
 def get_albums(user_id):
     try:
         connection = make_connection()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         cursor.execute(f"SELECT * FROM {database}.Album WHERE Usuario_UniqueID = '{user_id}'")
         res = cursor.fetchall()
@@ -51,6 +55,8 @@ def get_albums(user_id):
 def get_album_data(album_id):
     try:
         connection = make_connection()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         cursor.execute(f"SELECT * FROM {database}.Album WHERE UniqueID = '{album_id}'")
         res = cursor.fetchall()
@@ -74,6 +80,8 @@ def get_album_data(album_id):
 def get_images(album_id):
     try:
         connection = make_connection()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         cursor.execute(f"SELECT UbicacionBucket from {database}.Foto WHERE Album_UniqueID = '{album_id}'")
         res = cursor.fetchall()
@@ -94,6 +102,8 @@ def get_images(album_id):
 def get_past_photos(user_id):
     try:
         connection = make_connection()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         cursor.execute(f"SELECT UbicacionBucket from {database}.Foto WHERE Usuarios_UniqueID = '{user_id}'")
         res = cursor.fetchall()

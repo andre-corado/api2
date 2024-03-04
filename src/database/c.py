@@ -6,6 +6,8 @@ from models.image import Image
 def create_user(user : User):
     try:
         connection = make_connection()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         cursor.execute(f"INSERT INTO {database}.Usuarios (Nickname, NombreCompleto, Correo, FotoActualUbiBucket) VALUES ('{user.username}', '{user.fullname}', '{user.mail}', '{user.password}', '{user.s3Url} || ''')")
         connection.commit()
@@ -20,6 +22,8 @@ def create_user(user : User):
 def saveProfilePic(user : User):
     try:
         connection = make_connection()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         cursor.execute("INSERT INTO {}.Fotos (UbicacionBucket, Usuarios_UniqueID) VALUES ('{}', '{}')".format(database, user.s3Url, user.id))
         connection.commit()
@@ -32,6 +36,8 @@ def saveProfilePic(user : User):
 def create_album(album : Album):
     try:
         connection = make_connection()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         cursor.execute(f"INSERT INTO {database}.Album (Nombre, Usuario_UniqueID) VALUES ('{album.title}', '{album.user_id}')")
         connection.commit()
@@ -47,6 +53,8 @@ def save_image(image:Image):
     try:
         connection = make_connection()
         cursor = connection.cursor()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor.execute(f"INSERT INTO {database}.Foto (UbicacionBucket, Album_UniqueID, Nombre) VALUES ('{image.s3Url}', '{image.album_id}', '{image.name}')")
         cursor.execute(f"SELECT * FROM {database}.Foto WHERE UbicacionBucket = '{image.s3Url}'")
         res = cursor.fetchall()
@@ -63,6 +71,8 @@ def save_image(image:Image):
 def get_images(album_id):
     try:
         connection = make_connection()
+        if isinstance(connection, Exception):
+            raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
         cursor.execute(f"SELECT UbicationBucket from {database}.Foto WHERE Album_UniqueID = '{album_id}'")
         res = cursor.fetchall()
