@@ -115,7 +115,7 @@ def get_past_photos(user_id):
         res = cursor.fetchall()
         images = []
         for image in res:
-            images.push({
+            images.append({
                 "original": image,
                 "thumbnail": image
             })
