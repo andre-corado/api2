@@ -16,7 +16,7 @@ async def new_album(request: Request):
         if not is_valid_album(res):
             raise Exception("Datos de album incorrectos.")
         e = create_album(Album(res.get("id"), res.get("title"), res.get("idUser")))
-        if e:
+        if isinstance(e, Exception):
             raise Exception(e)
         return JSONResponse(
             status_code=200,
