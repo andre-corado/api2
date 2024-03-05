@@ -32,8 +32,9 @@ app.include_router(imageRouter)
 def root(): 
     msg = make_connection()
     return JSONResponse(
-        content={"message": "Hello, you are in the root of the server made with FastAPI & Py!" + msg,
-                 "developer" : "@andre-corado"},
+        content={"message": "Hello, you are in the root of the server made with FastAPI & Py!" ,
+                 "developer" : "@andre-corado",
+                 "database" : str(msg)},
         status_code=200
     )
   
