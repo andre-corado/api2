@@ -94,8 +94,8 @@ def get_images(album_id):
         images = []
         for image in res:
             images.append({
-                "original": image,
-                "thumbnail": image
+                "original": image[0],
+                "thumbnail": image[0]
             })
         cursor.close()
         connection.close()
@@ -116,8 +116,8 @@ def get_past_photos(user_id):
         images = []
         for image in res:
             images.append({
-                "original": image,
-                "thumbnail": image
+                "original": image[0],
+                "thumbnail": image[0]
             })
         cursor.close()
         connection.close()
