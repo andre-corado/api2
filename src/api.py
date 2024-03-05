@@ -6,6 +6,8 @@ from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 import uvicorn
 
+from services.db import make_connection
+
 from routes.user import userRouter
 from routes.album import albumRouter
 from routes.image import imageRouter
@@ -28,8 +30,9 @@ app.include_router(imageRouter)
 # Ruta raíz "/
 @app.get("/")
 def root(): 
+    msg = make_connection()
     return JSONResponse(
-        content={"message": "Hello, you are in the root of the server made with FastAPI & Py!",
+        content={"message": "Hello, you are in the root of the server made with FastAPI & Py!" + msg,
                  "developer" : "@andre-corado"},
         status_code=200
     )

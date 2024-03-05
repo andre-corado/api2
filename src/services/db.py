@@ -19,4 +19,3 @@ def make_connection():
     except Exception as e:        
         return e
 
-print(make_connection())
