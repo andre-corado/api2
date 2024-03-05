@@ -67,7 +67,7 @@ async def login_user(request: Request):
             content={
                 "status": 200,
                 "message": "Usuario logueado exitosamente.",
-                "userData": user.dict()}
+                "userData": user.toDict()}
         )
         
     except Exception as e:
