@@ -42,6 +42,6 @@ if __name__ == '__main__':
     print(get_user_data('andre-corado'))       
     print(get_user_data('andre-corado'))
     '''
-    uvicorn.run(app='api:app', reload=True) 
+    uvicorn.run(app='api:app', reload=True, port=3000, host='0.0.0.0') 
     
 

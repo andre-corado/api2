@@ -3,7 +3,7 @@ from fastapi.responses import JSONResponse
 from controllers.image import is_valid_image
 from database.c import save_image
 from models.image import Image
-from services.s3 import upload_to_s3
+from services.s3 import upload_file_to_s3
 
 imageRouter = APIRouter(prefix="/images")
 
@@ -24,7 +24,10 @@ async def new_image(request: Request):
         )
 
         # Guarda en s3
-        # img.s3Url = upload_file_to_s3(img.imageB64, img.name, True)
+        s3Url = upload_file_to_s3(img.imageB64, img.name, True)
+        if isinstance(s3Url, Exception):
+            raise Exception(s3Url)
+        img.s3Url = s3Url
         i = save_image(img)        
         
         if isinstance(i, Exception):
