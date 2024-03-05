@@ -88,7 +88,6 @@ async def update_user(request: Request):
             mail=data.get('mail'),
             imageB64=data.get('imageB64'),
             newUsername=data.get('newUsername'),
-            password=encrypt(data.get('password'))
         )
         if is_valid_updatedata(data) != True:
             raise Exception("Datos de actualización incorrectos, faltan campos.")
