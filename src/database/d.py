@@ -15,7 +15,7 @@ def delete_user_data(username):
         return True
     except Exception as e:
         print(e)
-        return False
+        return e
     
 def delete_album_data(album_id):
     try:
@@ -23,12 +23,12 @@ def delete_album_data(album_id):
         if isinstance(connection, Exception):
             raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
-        cursor.execute(f"DELETE FROM {database}.Foto WHERE Album_UniqueID = '{album_id}'")
-        cursor.execute(f"DELETE FROM {database}.Album WHERE UniqueID = '{album_id}'")
+        cursor.execute(f"DELETE FROM {database}.Foto WHERE Album_UniqueID = {album_id}")
+        cursor.execute(f"DELETE FROM {database}.Album WHERE UniqueID = {album_id}")
         connection.commit()
         cursor.close()
         connection.close()        
         return True
     except Exception as e:
         print(e)
-        return False
+        return e

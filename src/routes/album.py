@@ -5,6 +5,7 @@ from controllers.album import is_valid_album
 from database.c import create_album
 from database.r import get_albums, get_album_data, get_past_photos
 from database.u import update_album_data
+from database.d import delete_album_data
 
 albumRouter = APIRouter(prefix="/albums")
 
@@ -99,11 +100,22 @@ async def update_album(request: Request):
 
 @albumRouter.delete('/deleteAlbum')
 # Delete | /albums/deleteAlbum | elimina un album por id
-async def delete_album():
-    return JSONResponse(
-        status_code=200,
-        content={"message": "Album eliminado exitosamente."}
-    )
+async def delete_album(request:Request):
+    try:
+        res = await request.json()
+        album= get_album_data(res.get("id"))
+        if isinstance(album, Exception):
+            raise Exception(album)
+        if album.id == None:
+            raise Exception("Album no encontrado.")
+        e = delete_album_data(album.id)
+        
+    except Exception as e:
+        return JSONResponse(
+            status_code=400,
+            content={"status": 400, "message": str(e)}
+        )
+    
 
 @albumRouter.post('/getAllFotosPasadas')
 # Post | /albums/getAllFotosPasadas | devuelve todas las fotos pasadas
