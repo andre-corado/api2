@@ -11,10 +11,12 @@ database=os.getenv("DB_NAME")
 def make_connection():
     try:
         return rds.connect(
-            host=os.getenv("DB_HOST"),
-            user=os.getenv("DB_USER"),
-            password=os.getenv("DB_PASSWORD"),
-            database=database
+            host="practica1.crwuii88a698.us-east-1.rds.amazonaws.com",
+            user="as",
+            password="dbpasspractica1",
+            database="database"
         )
     except Exception as e:        
         return e
+
+print(make_connection())
