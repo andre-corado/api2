@@ -77,7 +77,7 @@ async def login_user(request: Request):
         )
 
 
-@userRouter.put('/update')
+@userRouter.post('/update')
 # Put | /users/update | actualiza la información del usuario
 async def update_user(request: Request):
     try:
