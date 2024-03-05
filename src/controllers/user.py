@@ -29,7 +29,8 @@ def is_valid_logindata(user, password):
     return True
 
 def is_valid_updatedata(data):
-    if len(data.get('username')) == 0 or len(data.get('password')) == 0 or len(data.get('mail')) == 0 or len(data.get('fullname')) == 0 or len(data.get('imageB64')) == 0:
+    if len(data.get('username')) == 0 or len(data.get('password')) == 0 or len(data.get('mail')) == 0 or len(data.get('fullname')) == 0:
+        print("Faltan campos en el request.")
         return JSONResponse(
             status_code=400,
             content={
