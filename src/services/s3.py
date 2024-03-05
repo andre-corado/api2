@@ -21,7 +21,7 @@ def upload_file_to_s3(image_b64, key, use_uuid):
     # Subir el objeto a S3
     try:
         s3_client.put_object(
-            Bucket=BUCKET_NAME,
+            Bucket='faunadexp1',
             Key=key_final,
             Body=image_bytes,
             ContentType='image/jpeg'
