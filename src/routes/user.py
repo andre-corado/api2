@@ -90,8 +90,22 @@ async def update_user(request: Request):
             imageB64=data.get('imageB64'),
             newUsername=data.get('newUsername'),
         )
+        userDB = get_user_data(user.username)
+        if userDB is None:
+            raise Exception("Usuario no encontrado.")
         if is_valid_updatedata(data) != True:
             raise is_valid_updatedata(data)
+        if user.newUsername != user.username:
+            if get_user_data(data.get('newUsername')) != None:
+                return Exception("El nuevo nombre de usuario ya existe.")
+        
+        if encrypt(user.password) != userDB.password:
+            raise Exception("Contraseña incorrecta.")
+
+        user.id = userDB.id
+        if (user.imageB64):
+            user.s3Url = userDB.s3Url
+            
         if save_updates_user(user):
             raise Exception("Error al actualizar el usuario.")
         return JSONResponse(
