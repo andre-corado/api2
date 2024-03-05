@@ -59,8 +59,8 @@ async def get_album(request: Request, id: str):
         except:
             raise Exception("Id inválido, tipo str.")
         alb = get_album_data(id)
-        if not isinstance(e, Album):
-            raise Exception(e)
+        if not isinstance(alb, Album):
+            raise Exception(alb)
         if alb.id == None:
             raise Exception("Album no encontrado.")
         return JSONResponse(
