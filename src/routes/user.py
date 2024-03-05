@@ -86,6 +86,7 @@ async def update_user(request: Request):
         user = User(
             username=data.get('username'),
             fullname=data.get('fullname'),
+            password=data.get('password'),
             mail=data.get('mail'),
             imageB64=data.get('imageB64'),
             newUsername=data.get('newUsername'),

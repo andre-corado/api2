@@ -14,6 +14,7 @@ def save_updates_user(user:User):
         if user.newUsername != user.username:
             script += f", Nickname = '{user.newUsername}'"
         script += f" WHERE UniqueID= '{user.id}'"
+        cursor.execute(script)
         connection.commit()
         cursor.close()
         connection.close()
