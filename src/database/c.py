@@ -9,14 +9,14 @@ def create_user(user : User):
         if isinstance(connection, Exception):
             raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
-        cursor.execute(f"INSERT INTO {database}.Usuarios (Nickname, NombreCompleto, Correo, FotoActualUbiBucket) VALUES ('{user.username}', '{user.fullname}', '{user.mail}', '{user.password}', '{user.s3Url} || ''')")
+        cursor.execute(f"INSERT INTO {database}.Usuarios (Nickname, NombreCompleto, Correo, Password, FotoActualUbiBucket) VALUES ('{user.username}', '{user.fullname}', '{user.mail}', '{user.password}', '{user.s3Url}')")
         connection.commit()
         cursor.close()
         connection.close()
         print("User created.")
         return 
     except Exception as e:
-        print(e)
+        print(TypeError(e))
         return e
     
 def saveProfilePic(user : User):
