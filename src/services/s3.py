@@ -14,7 +14,6 @@ def upload_file_to_s3(image_b64, filename):
 
     obj = s3.Object(bucket_name,filename)
     obj.put(Body=base64.b64decode(image_b64))
-    location = boto3.client('s3').get_bucket_location(Bucket=bucket_name)['LocationConstraint']
     #get object url
     object_url = "https://%s.s3-%s.amazonaws.com/%s" % (bucket_name,location, filename)
     print(object_url)
