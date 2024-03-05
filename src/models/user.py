@@ -13,7 +13,8 @@ class User():
         return "User:\t" + str(self.toDict()) + "\n"
 
     def toDict(self):
-        return {            
+        return {     
+            "id": int(self.id),       
             "username": self.username,
             "fullname": self.fullname,
             "mail": self.mail,
