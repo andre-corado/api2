@@ -93,7 +93,7 @@ def get_images(album_id):
         res = cursor.fetchall()
         images = []
         for image in res:
-            images.push({
+            images.append({
                 "original": image,
                 "thumbnail": image
             })
