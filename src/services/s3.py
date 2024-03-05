@@ -26,7 +26,7 @@ def upload_file_to_s3(image_b64, key, use_uuid):
             Body=image_bytes,
             ContentType='image/jpeg'
         )
-        key_final = f"https://{BUCKET_NAME}.s3.amazonaws.com/{key_final}"
+        key_final = f"https://faunadexp1.s3.amazonaws.com/{key_final}"
         return key_final
     except Exception as e:
         print("Error al subir el archivo:", e)
