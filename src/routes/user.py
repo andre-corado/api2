@@ -10,7 +10,7 @@ from utils.md5 import encrypt
 userRouter = APIRouter(prefix="/users")
 
 
-@userRouter.post(path='/newUser')
+@userRouter.put(path='/newUser')
 # Post | /users/newUser | crea un nuevo usuario
 async def new_user(request: Request):    
     try:
@@ -90,7 +90,7 @@ async def update_user(request: Request):
             newUsername=data.get('newUsername'),
         )
         if is_valid_updatedata(data) != True:
-            raise Exception("Datos de actualización incorrectos, faltan campos.")
+            raise is_valid_updatedata(data)
         if save_updates_user(user):
             raise Exception("Error al actualizar el usuario.")
         return JSONResponse(
