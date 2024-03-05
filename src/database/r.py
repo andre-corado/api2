@@ -44,7 +44,13 @@ def get_albums(user_id):
         res = cursor.fetchall()
         albums = []
         for album in res:
-            albums.push(Album(album[0], album[1], album[2]))
+            albums.append(
+                {
+                    "id": album[0],
+                    "title": album[1],
+                    "user_id": album[2]
+                }
+            )
         cursor.close()
         connection.close()
         return albums
