@@ -109,7 +109,10 @@ async def delete_album(request:Request):
         if album.id == None:
             raise Exception("Album no encontrado.")
         e = delete_album_data(album.id)
-        
+        return JSONResponse(
+            status_code=200,
+            content={"status": 200, "message": "Album eliminado exitosamente."}
+        )
     except Exception as e:
         return JSONResponse(
             status_code=400,
