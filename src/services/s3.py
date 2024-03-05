@@ -6,8 +6,15 @@ import re
 BUCKET_NAME = 'faunadexp1'
 
 # Crear un cliente S3
-s3 = boto3.resource('s3')
+
+# Configure AWS credentials
+session = boto3.Session(
+    aws_access_key_id='YOUR_ACCESS_KEY',
+    aws_secret_access_key='YOUR_SECRET_ACCESS_KEY')
+s3 = session.resource('s3')
 bucket_name = 'faunadexp1'
+location = 'east-1'
+
 
 def upload_file_to_s3(image_b64, filename):
     filename += ".jpg"
@@ -15,7 +22,7 @@ def upload_file_to_s3(image_b64, filename):
     obj = s3.Object(bucket_name,filename)
     obj.put(Body=base64.b64decode(image_b64))
     #get object url
-    object_url = "https://%s.s3-%s.amazonaws.com/%s" % (bucket_name,location, filename)
+    object_url = "https://as.s3-%s.amazonaws.com/%s" % (bucket_name, location, filename)
     print(object_url)
 
 # Ejemplo de uso:
@@ -26,4 +33,6 @@ base="/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAUFBQUFBQUGBgUICAcICAsKCQkKCxEMDQwNDBEaEB
 
 
 
+
+    
 print(upload_file_to_s3(str.encode('utf-8'), "chile"))
