@@ -33,7 +33,8 @@ async def new_user(request: Request):
         # Si no hay errores
         return JSONResponse(
             status_code=201,
-            content={"message": "Usuario creado exitosamente.",
+            content={ "status": 201,
+                    "message": "Usuario creado exitosamente.",
                      "username": data.get('username'),
                      "mail": data.get('mail'),
                      "fullname": data.get('fullname'),
