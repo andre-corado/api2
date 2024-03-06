@@ -73,7 +73,7 @@ async def login_user(request: Request):
         return JSONResponse(
             status_code=200,
             content={
-                "status": 200,
+                "status": 201,
                 "message": "Usuario logueado exitosamente.",
                 "userData": user.toDict()}
         )
