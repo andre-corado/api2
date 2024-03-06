@@ -42,7 +42,7 @@ async def get_all_albums(request: Request):
             raise Exception(e)
         return JSONResponse(
             status_code=200,
-            content={"status": 201, "message": "Albums obtenidos exitosamente.", "albumData": e}
+            content={"status": 200, "message": "Albums obtenidos exitosamente.", "albumData": e}
         )
 
     except Exception as e:
@@ -66,7 +66,7 @@ async def get_album(request: Request, id: str):
             raise Exception("Album no encontrado.")
         return JSONResponse(
             status_code=200,
-            content={"status": 201, "message": "Album obtenido exitosamente.", "albumData": alb.to_dict()}
+            content={"status": 200, "message": "Album obtenido exitosamente.", "albumData": alb.to_dict()}
         )
             
     
@@ -111,7 +111,7 @@ async def delete_album(request:Request):
         e = delete_album_data(album.id)
         return JSONResponse(
             status_code=200,
-            content={"status": 201, "message": "Album eliminado exitosamente."}
+            content={"status": 200, "message": "Album eliminado exitosamente."}
         )
     except Exception as e:
         return JSONResponse(
@@ -132,7 +132,7 @@ async def get_all_fotos_pasadas(request: Request):
             raise Exception(fotos)
         return JSONResponse(
             status_code=200,
-            content={"status": 201, "message": "Fotos pasadas obtenidas exitosamente.", "albumData": fotos}
+            content={"status": 200, "message": "Fotos pasadas obtenidas exitosamente.", "albumData": fotos}
         )
     except Exception as e:
         return JSONResponse(
