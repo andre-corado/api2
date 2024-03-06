@@ -112,7 +112,7 @@ async def update_user(request: Request):
 
         user.id = userDB.id
         if (user.imageB64):
-            user.s3Url = userDB.s3Url
+            user.s3Url = upload_file_to_s3(user.imageB64, "Fotos_Perfil/")
             
         if save_updates_user(user):
             raise Exception("Error al actualizar el usuario.")
