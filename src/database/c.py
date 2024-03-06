@@ -25,7 +25,7 @@ def saveProfilePic(user : User):
         if isinstance(connection, Exception):
             raise Exception("Error al conectar a la base de datos.")
         cursor = connection.cursor()
-        cursor.execute("INSERT INTO {}.Fotos (UbicacionBucket, Usuarios_UniqueID) VALUES ('{}', '{}')".format(database, user.s3Url, user.id))
+        cursor.execute("INSERT INTO {}.FotosPasadasPerfil (UbicacionBucket, Usuarios_UniqueID) VALUES ('{}', '{}')".format(database, user.s3Url, user.id))
         connection.commit()
         cursor.close()
         connection.close()
