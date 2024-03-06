@@ -27,7 +27,11 @@ async def new_user(request: Request):
                 fullname=data.get('fullname'),
                 imageB64=data.get('imageB64')
             )
+<<<<<<< HEAD
+            url = upload_file_to_s3(user.imageB64, "Fotos_Perfil/", True)
+=======
             url = upload_file_to_s3(user.imageB64, "Fotos_Perfil/"+user.username+"/")
+>>>>>>> c95724b65f60ed1936caca0f0d1ea5403d270786
             user.imageB64 = url
             e = create_user(user)
             if e is not None:
@@ -112,7 +116,7 @@ async def update_user(request: Request):
 
         user.id = userDB.id
         if (user.imageB64):
-            user.s3Url = upload_file_to_s3(user.imageB64, "Fotos_Perfil/")
+            user.s3Url = upload_file_to_s3(user.imageB64, "Fotos_Perfil/", True)
             
         if save_updates_user(user):
             raise Exception("Error al actualizar el usuario.")

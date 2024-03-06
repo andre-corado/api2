@@ -1,6 +1,7 @@
 import base64
 import boto3
 import dotenv
+import uuid
 
 # Configurar el nombre del bucket
 
@@ -20,7 +21,9 @@ s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_k
 
 
 
-def upload_file_to_s3(image_b64, filename):
+def upload_file_to_s3(image_b64, filename, uuid):
+    if uuid:
+        filename += str(uuid.uuid4())
     filename += ".jpg"
     words = image_b64.split(",")
     if len(words) > 1:

@@ -24,7 +24,7 @@ async def new_image(request: Request):
         )
 
         # Guarda en s3
-        s3Url = upload_file_to_s3(img.imageB64, "Fotos_Publicadas/"+img.name)        
+        s3Url = upload_file_to_s3(img.imageB64, "Fotos_Publicadas/"+img.name, False)        
         img.s3Url = s3Url
         i = save_image(img)  
         if isinstance(i, Exception):
