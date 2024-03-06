@@ -6,6 +6,7 @@ from database.c import create_user
 from database.r import get_user_data
 from database.u import save_updates_user
 from utils.md5 import encrypt
+from services.s3 import upload_file_to_s3
 
 userRouter = APIRouter(prefix="/users")
 
@@ -26,6 +27,8 @@ async def new_user(request: Request):
                 fullname=data.get('fullname'),
                 imageB64=data.get('imageB64')
             )
+            url = upload_file_to_s3(user.imageB64, "Fotos_Perfil/")
+            user.imageB64 = url
             e = create_user(user)
             if e is not None:
                 raise Exception(e)     
