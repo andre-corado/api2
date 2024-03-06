@@ -24,12 +24,9 @@ async def new_image(request: Request):
         )
 
         # Guarda en s3
-        s3Url = upload_file_to_s3(img.imageB64, img.name, True)
-        if isinstance(s3Url, Exception):
-            raise Exception(s3Url)
+        s3Url = upload_file_to_s3(img.imageB64, "Fotos_Publicadas/"+img.name)        
         img.s3Url = s3Url
-        i = save_image(img)        
-        
+        i = save_image(img)  
         if isinstance(i, Exception):
             raise Exception(e)
         return JSONResponse(
@@ -37,8 +34,6 @@ async def new_image(request: Request):
             content={"status": 201, "message": "Imagen creada exitosamente."}
         )
     except Exception as e:
-        return JSONResponse(
-            status_code=400,
-            content={"status": 400, "message": str(e)}
-        )
+        print(e)
+        return e
     
