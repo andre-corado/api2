@@ -46,7 +46,10 @@ async def new_user(request: Request):
                 status_code=201,
                 content={ "status": 201,
                         "message": "Usuario creado exitosamente.",
-                        "fullname": data.get('fullname'),
+                        "username": userData.username,
+                        "mail": userData.mail,
+                        "fullname": userData.fullname,
+                        "imageB64": userData.imageB64}
             )       
     
     except Exception as e:  
