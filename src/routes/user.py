@@ -104,9 +104,8 @@ async def update_user(request: Request):
         if is_valid_updatedata(data) != True:
             raise is_valid_updatedata(data)
         if user.newUsername != user.username:
-            if get_user_data(data.get('newUsername')) != None:
-                return Exception("El nuevo nombre de usuario ya existe.")
-        
+            if get_user_data(user.newUsername) != None:
+                raise Exception("El nuevo nombre de usuario ya existe.")        
         if encrypt(user.password) != userDB.password:
             raise Exception("Contraseña incorrecta.")
 
@@ -123,5 +122,5 @@ async def update_user(request: Request):
     except Exception as e:
         return JSONResponse(
             status_code=400,
-            content={"status": 400, "message": str(e)}
+            content={"status": 401, "message": str(e)}
         )
