@@ -2,7 +2,7 @@ from fastapi import Request, APIRouter
 from fastapi.responses import JSONResponse
 from models.user import User
 from controllers.user import is_valid_user, is_valid_logindata, is_valid_updatedata
-from database.c import create_user
+from database.c import create_user, saveProfilePic
 from database.r import get_user_data
 from database.u import save_updates_user
 from utils.md5 import encrypt
@@ -32,17 +32,21 @@ async def new_user(request: Request):
             e = create_user(user)
             if e is not None:
                 raise Exception(e)     
-                
-        # Si no hay errores
-        return JSONResponse(
-            status_code=201,
-            content={ "status": 201,
-                    "message": "Usuario creado exitosamente.",
-                     "username": data.get('username'),
-                     "mail": data.get('mail'),
-                     "fullname": data.get('fullname'),
-                     "imageB64": data.get('imageB64')}
-        )       
+            userData = get_user_data(user.username)
+            if userData.id == 0:
+                raise Exception("Correo o nombre de usuario ya existen.")
+            saveProfilePic(userData)
+
+            # Si no hay errores
+            return JSONResponse(
+                status_code=201,
+                content={ "status": 201,
+                        "message": "Usuario creado exitosamente.",
+                        "username": data.get('username'),
+                        "mail": data.get('mail'),
+                        "fullname": data.get('fullname'),
+                        "imageB64": data.get('imageB64')}
+            )       
     
     except Exception as e:  
         return JSONResponse(
