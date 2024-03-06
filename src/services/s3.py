@@ -28,4 +28,4 @@ base="/9j/4AAQSkZJRgABAQAAAQABAAD/2wCEAAUFBQUFBQUGBgUICAcICAsKCQkKCxEMDQwNDBEaEB
 
 
     
-print(upload_file_to_s3(str.encode('utf-8'), "chile2"))
+print(upload_file_to_s3(str.encode('utf-8'), "/prueba/chile2"))
