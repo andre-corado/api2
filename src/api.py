@@ -12,7 +12,7 @@ from routes.user import userRouter
 from routes.album import albumRouter
 from routes.image import imageRouter
 
-
+from database.d import delete_user_data
 app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
@@ -46,6 +46,7 @@ if __name__ == '__main__':
     print(get_user_data('andre-corado'))       
     print(get_user_data('andre-corado'))
     '''
+    #delete_user_data("andre-corad0")
     uvicorn.run(app='api:app', reload=True, port=3000, host='0.0.0.0') 
     
 

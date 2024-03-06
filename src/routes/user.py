@@ -28,7 +28,7 @@ async def new_user(request: Request):
                 imageB64=data.get('imageB64')
             )
             url = upload_file_to_s3(user.imageB64, "Fotos_Perfil/", True)
-            user.imageB64 = url
+            user.s3Url = url
             e = create_user(user)
             if e is not None:
                 raise Exception(e)     
