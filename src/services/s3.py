@@ -24,4 +24,4 @@ def upload_file_to_s3(image_b64, filename):
     #get object url
     object_url = "https://%s.s3.amazonaws.com/%s" % (bucket_name, filename)
 
-    return object_url
+    return str(object_url)
