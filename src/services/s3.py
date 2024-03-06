@@ -1,12 +1,20 @@
 import base64
 import boto3
+import dotenv
 
 # Configurar el nombre del bucket
 
 # Crear un cliente S3
 bucket_name = 'faunadexp1'
-aws_access_key_id = 'AKIAVRUVRXKCQWV4TE5C'
-aws_secret_access_key = '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'
+# Leer aws access key y secret key de dotenv
+dotenv.load_dotenv()
+print(dotenv.dotenv_values())
+aws_access_key_id = dotenv.get_key('./.env', 'AWS_ACCESS_KEY_ID')
+aws_secret_access_key = dotenv.get_key('./.env', 'AWS_SECRET_ACCESS_KEY')
+print(aws_secret_access_key)
+
+print(aws_access_key_id)
+
 location = 'east-1'
 s3 = boto3.client('s3', aws_access_key_id=aws_access_key_id, aws_secret_access_key=aws_secret_access_key)
 
