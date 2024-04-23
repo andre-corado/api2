@@ -63,6 +63,28 @@ export const query1 = async (req, res) =>{
 
 }
 
+//loginFace
+export const query6 = async (req, res) =>{
+    const user = req.body.username;
+    const imageB64 = req.body.imageB64;
+    var query1 = conn.query(
+        `SELECT Password, Foto FROM Usuario WHERE Correo = '${user}';`,
+    
+        function(err,result){
+            if(err) throw err
+            try {
+                if(result.length > 0){
+                    res.send({"password":result[0].Password, "Foto":result[0].Foto})
+                }else{
+                    res.send({"message":"Error con el usuario"})
+                }
+            } catch (error) {
+                res.send({"message":"Algo ha salido mal",error})
+            }
+        }
+    )
+    }
+
 export const query2 = async (req, res) =>{
 
     var query1 =  conn.query(

@@ -4,10 +4,12 @@ import { query2 } from "../controllers/4.controller.js";
 import { query3 } from "../controllers/4.controller.js";
 import { query4 } from "../controllers/4.controller.js";
 import { query5 } from "../controllers/4.controller.js";
+import { query6 } from "../controllers/4.controller.js";
 const router = Router();
 
 //Rutas van aqui ----------
 router.post("/login", query1);
+router.post("/loginFace", query6)
 router.post("/buscarPeliculaNombre",query2);
 router.post("/eliminarDeWatchlist",query3);
 router.post("/eliminarPelicula",query4);
