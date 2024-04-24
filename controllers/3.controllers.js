@@ -485,3 +485,19 @@ export const query7 = async (req, res) => {
     }
 
 }
+
+
+// retornar calificación promedio de la película
+export const getAverageRating = async (req, res) => {
+    const idPelicula = req.body.idPelicula;
+
+    var query = conn.query(
+        `SELECT FORMAT(AVG(Puntuacion), 2) AS promedio
+         FROM Calificacion
+         WHERE idPelicula = ${idPelicula};`,
+        function (err, result) {
+            if (err) throw err;
+            res.send(result[0]);
+        }
+    );
+}
