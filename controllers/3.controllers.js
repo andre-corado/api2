@@ -492,7 +492,7 @@ export const getAverageRating = async (req, res) => {
     const idPelicula = req.body.idPelicula;
 
     var query = conn.query(
-        `SELECT FORMAT(AVG(Puntuacion), 2) AS promedio
+        `SELECT FORMAT(AVG(Puntuacion), 1) AS promedio
          FROM Calificacion
          WHERE idPelicula = ${idPelicula};`,
         function (err, result) {
