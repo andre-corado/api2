@@ -10,9 +10,12 @@ import {
 } from "../config/config.js";
 
 import { createConnection } from "mysql";
+import uploadImage from "../utils/s3.js";
+import generarUUID from "../utils/uuid.js"
 
 //encriptado
 import { encrypt, compare } from '../config/handleBcrypt.js'
+import registerUser from "../utils/cognito.js";
 
 var conn = createConnection({
     host: DB_HOST,
@@ -37,7 +40,7 @@ export const query1 = async (req, res) => {
     //busco que no se repita el email
     var query1 = conn.query(
         `SELECT idUsuario FROM Usuario where Correo='${req.body.Correo}' ;`,
-        function (err, result) {    //result en un array cada indice es una tupla de la respectiva tabla
+        async function (err, result) {    //result en un array cada indice es una tupla de la respectiva tabla
             if (err) throw err
 
             console.log(">>>>>>>")
@@ -50,10 +53,10 @@ export const query1 = async (req, res) => {
                 // F no se hace nada
                 //console.log("ya existe xd, no se debe de guardar")
                 console.log("YA EXISTE en DB el correo, reintente con otro correo!")
-                res.send({ "guardado": false })
+                res.send({"guardado": false})
 
             } else { //no existe tal correo se procede a almacenar en mysql
-                //console.log("ok, se procede a guardar en DB!")
+                console.log("Registrando Usuario!")
 
                 //encripto el correo    **********************************************************
                 const passEncrypt = encrypt(req.body.Password)
@@ -65,8 +68,22 @@ export const query1 = async (req, res) => {
                 console.log(">>>> comparacion")
                 console.log(compareEncrypt)
 
+                // Guardamos la foto en S3
+
+                const user = req.body.Correo.split('@')[0];
+                const filename = `profilePictures/${user}`;
+                const base64 = req.body.imageB64;
+                const linkS3 = await uploadImage(filename, base64);
+                console.log(linkS3)
+
+                // Guardamos el usuario en cognito
+                await registerUser(req.body.Correo, passEncrypt, req.body.Correo);
+
+                // Guardamos datos del usuario en la base de datos
                 var query = conn.query(
-                    `INSERT INTO Usuario(Nombre,Apellido,Password,Correo,Tipo,Foto) VALUES ('${req.body.Nombre}','${req.body.Apellido}','${passEncrypt}','${req.body.Correo}',${req.body.Rol},'Foto'    );`,
+                    `INSERT INTO Usuario(Nombre, Apellido, Password, Correo, Tipo, Foto)
+                     VALUES ('${req.body.Nombre}', '${req.body.Apellido}', '${passEncrypt}', '${req.body.Correo}',
+                             ${req.body.Rol}, '${linkS3}');`,
                     function (err, result) {
                         if (err) throw err
 
@@ -124,20 +141,32 @@ export const query2 = async (req, res) => {
         //busco que no se repita la pelicula
         var query1 = conn.query(
             `SELECT idPelicula FROM Pelicula where Nombre='${req.body.Nombre}' ;`,
-            function (err, result) {    //result en un array cada indice es una tupla de la respectiva tabla
+            async function (err, result) {    //result en un array cada indice es una tupla de la respectiva tabla
                 if (err) throw err
 
                 console.log(">>>>>>>")
 
                 if (result.length > 0) {
                     console.log("YA EXISTE en DB la pelicula, reintente con otro nombre!")
-                    res.send({ "guardado": false })
+                    res.send({"guardado": false})
 
                 } else { //no existe tal pelicula se procede a almacenar en mysql
+
+                    // Guardamos la foto en S3
+
+                    const uuid = generarUUID(3);
+                    const filename = `movies/${req.body.Nombre}_${uuid}`;
+                    const base64 = req.body.Imagen;
+                    const linkS3 = await uploadImage(filename, base64);
+
                     var query = conn.query(//                                                                                                           Nombre,Director,Resumen,duracion,clasificacion,imagen,trailer,Estreno
 
                         //guardamos la pelicula
-                        `INSERT INTO Pelicula(Nombre,Director,Resumen,duracion,clasificacion,imagen,trailer,Estreno) VALUES ('${req.body.Nombre}','${req.body.Director}','${req.body.Resumen}','${req.body.Duracion}','${req.body.Clasificacion}','${req.body.Imagen}','${req.body.Trailer}',${req.body.Estreno}    );`,
+                        `INSERT INTO Pelicula(Nombre, Director, Resumen, duracion, clasificacion, imagen, trailer,
+                                              Estreno)
+                         VALUES ('${req.body.Nombre}', '${req.body.Director}', '${req.body.Resumen}',
+                                 '${req.body.Duracion}', '${req.body.Clasificacion}', '${linkS3}',
+                                 '${req.body.Trailer}', ${req.body.Estreno});`,
                         function (err, result) {
                             if (err) throw err
                             //ya se guardo en mysql
@@ -146,7 +175,9 @@ export const query2 = async (req, res) => {
 
                     //obtener primary key de esta pelicula
                     var query = conn.query(//                                                                                                           Nombre,Director,Resumen,duracion,clasificacion,imagen,trailer,Estreno
-                        `SELECT idPelicula FROM Pelicula where Nombre='${req.body.Nombre}' ;`,
+                        `SELECT idPelicula
+                         FROM Pelicula
+                         where Nombre = '${req.body.Nombre}';`,
                         function (err, result) {
                             if (err) throw err
 
@@ -164,7 +195,9 @@ export const query2 = async (req, res) => {
                                 //obtener primary key del actor y guardar en tabla intermedia Pelicula_Actor
 
                                 var query = conn.query(//                                                                                                           Nombre,Director,Resumen,duracion,clasificacion,imagen,trailer,Estreno
-                                    `SELECT idActor FROM Actor where Nombre='${req.body.Actores[i]}' ;`,
+                                    `SELECT idActor
+                                     FROM Actor
+                                     where Nombre = '${req.body.Actores[i]}';`,
                                     function (err, result) {
                                         if (err) throw err
                                         //obtuve la primry key del actor procedo a realizar conexion de tabla intermedia
@@ -174,7 +207,8 @@ export const query2 = async (req, res) => {
                                         console.log("Pelicula_Actor: " + keyPelicula + "/" + result[0].idActor + "\n")
 
                                         var query = conn.query(//                                                                                                           Nombre,Director,Resumen,duracion,clasificacion,imagen,trailer,Estreno
-                                            `INSERT INTO Pelicula_Actor(idPelicula,idActor) VALUES (${keyPelicula},${result[0].idActor});`,
+                                            `INSERT INTO Pelicula_Actor(idPelicula, idActor)
+                                             VALUES (${keyPelicula}, ${result[0].idActor});`,
                                             function (err, result) {
                                                 //if (err) throw err
                                                 //ya se guardo en mysql
@@ -188,7 +222,7 @@ export const query2 = async (req, res) => {
 
                         })
 
-                    res.send({ "guardado": true })
+                    res.send({"guardado": true})
 
                 }
             }
@@ -306,20 +340,29 @@ export const query6 = async (req, res) => {
         //busco que no se repita el actor
         var query1 = conn.query(
             `SELECT idActor FROM Actor where Nombre='${req.body.Nombre}' ;`,
-            function (err, result) {    //result en un array cada indice es una tupla de la respectiva tabla
+            async function (err, result) {    //result en un array cada indice es una tupla de la respectiva tabla
                 if (err) throw err
 
                 console.log(">>>>>>>")
 
                 if (result.length > 0) {
                     console.log("YA EXISTE en DB el actor, reintente con otro nombre!")
-                    res.send({ "guardado": false })
+                    res.send({"guardado": false})
 
                 } else { //no existe tal actor se procede a almacenar en mysql
+
+                    // Guardamos la foto en S3
+
+                    const uuid = generarUUID(3);
+                    const filename = `actors/${req.body.Nombre}_${uuid}`;
+                    const base64 = req.body.Foto;
+                    const linkS3 = await uploadImage(filename, base64);
+
                     var query = conn.query(//                                                                                                           Nombre,Director,Resumen,duracion,clasificacion,imagen,trailer,Estreno
 
                         //guardamos la pelicula
-                        `INSERT INTO Actor(Nombre,Foto,Fecha_Nacimiento) VALUES ('${req.body.Nombre}','${req.body.Foto}','${req.body.Fecha_Nacimiento}'   );`,
+                        `INSERT INTO Actor(Nombre, Foto, Fecha_Nacimiento)
+                         VALUES ('${req.body.Nombre}', '${linkS3}', '${req.body.Fecha_Nacimiento}');`,
                         function (err, result) {
                             if (err) throw err
                             //ya se guardo en mysql
@@ -328,7 +371,9 @@ export const query6 = async (req, res) => {
 
                     //obtener primary key de este actor
                     var query = conn.query(//                                                                                                           Nombre,Director,Resumen,duracion,clasificacion,imagen,trailer,Estreno
-                        `SELECT idActor FROM Actor where Nombre='${req.body.Nombre}' ;`,
+                        `SELECT idActor
+                         FROM Actor
+                         where Nombre = '${req.body.Nombre}';`,
                         function (err, result) {
                             if (err) throw err
 
@@ -346,7 +391,9 @@ export const query6 = async (req, res) => {
                                 //obtener primary key de pelicula y guardar en tabla intermedia Pelicula_Actor
 
                                 var query = conn.query(//                                                                                                           Nombre,Director,Resumen,duracion,clasificacion,imagen,trailer,Estreno
-                                    `SELECT idPelicula FROM Pelicula where Nombre='${req.body.Participacion[i]}' ;`,
+                                    `SELECT idPelicula
+                                     FROM Pelicula
+                                     where Nombre = '${req.body.Participacion[i]}';`,
                                     function (err, result) {
                                         if (err) throw err
                                         //obtuve la primry key del actor procedo a realizar conexion de tabla intermedia
@@ -356,7 +403,8 @@ export const query6 = async (req, res) => {
                                         console.log("Pelicula_Actor: " + keyPelicula + "/" + result[0].idPelicula + "\n")
 
                                         var query = conn.query(//                                                                                                           Nombre,Director,Resumen,duracion,clasificacion,imagen,trailer,Estreno
-                                            `INSERT INTO Pelicula_Actor(idPelicula,idActor) VALUES (${result[0].idPelicula},${keyPelicula});`,
+                                            `INSERT INTO Pelicula_Actor(idPelicula, idActor)
+                                             VALUES (${result[0].idPelicula}, ${keyPelicula});`,
                                             function (err, result) {
                                                 //if (err) throw err
                                                 //ya se guardo en mysql
@@ -370,7 +418,7 @@ export const query6 = async (req, res) => {
 
                         })
 
-                    res.send({ "guardado": true })
+                    res.send({"guardado": true})
 
                 }
             }

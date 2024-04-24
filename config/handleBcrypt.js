@@ -1,19 +1,12 @@
-//var bcrypt = require('bcryptjs')
+import crypto from 'crypto';
 
-//import { genSaltSync,hashSync,compareSync } from "bcryptjs";
-
-import pkg from 'bcryptjs';
-const { genSaltSync,hashSync,compareSync } = pkg;
-
-//encriptar texto plano
-export var encrypt =  (passwordNormal) => {//texto plano
-    var salt = genSaltSync(10);
-    var hash = hashSync(passwordNormal, salt);
-    return hash
+// Función para cifrar una contraseña en texto plano utilizando MD5
+export const encrypt = (passwordNormal) => {
+    return crypto.createHash('md5').update(passwordNormal).digest('hex');
 }
 
-//comparar texto plano con hash
-export var compare =  (passwordNormal, hashPassword) => {//texto plano, hash
-    var resultado =  compareSync(passwordNormal, hashPassword);
-    return resultado
+// Función para comparar una contraseña en texto plano con un hash MD5
+export const compare = (passwordNormal, hashPassword) => {
+    const hashedPassword = crypto.createHash('md5').update(passwordNormal).digest('hex');
+    return hashedPassword === hashPassword;
 }

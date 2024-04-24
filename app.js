@@ -34,7 +34,7 @@ app.use("/", unoRoutes);//registro usuarios
 app.use("/", unoRoutes2);//registro peliculas
 app.use("/", unoRoutes3);//retorno de actores DB
 app.use("/", unoRoutes4);//retorno de peliculas DB
-app.use("/", unoRoutes5);//retorno de calificacion de pelicula en DB
+app.use("/", unoRoutes5);//retorno de calificacion de pelicula en DB del usuario
 app.use("/", unoRoutes6);//retorno de calificacion de pelicula en DB
 app.use("/", unoRoutes7);//registro de calificacion de pelicula en DB
 

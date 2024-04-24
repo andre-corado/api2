@@ -14,6 +14,7 @@ import {createConnection } from "mysql";
 //encriptado
 import {encrypt,compare} from '../config/handleBcrypt.js'
 import { json } from "express";
+import useLambda from "../utils/lambda.js";
 
 var conn = createConnection({
     host:DB_HOST,
@@ -74,7 +75,14 @@ export const query6 = async (req, res) =>{
             if(err) throw err
             try {
                 if(result.length > 0){
-                    res.send({"password":result[0].Password, "Foto":result[0].Foto})
+                    let data = {
+                        username: user,
+                        password: result[0].Password,
+                        profileImageS3Url: result[0].Foto,
+                        imageB64: imageB64
+                    }
+
+                    res.send(useLambda("loginFace", data))
                 }else{
                     res.send({"message":"Error con el usuario"})
                 }
