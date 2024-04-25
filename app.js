@@ -18,6 +18,8 @@ import cincoRoutes from "./routes/2.routes.js";
 
 
 const app = express();
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 //Cors
 var corsOptions = {
@@ -28,8 +30,6 @@ var corsOptions = {
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors(corsOptions));
-app.use(bodyParser.json({ limit: '50mb' }));
-app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Routes
 app.use("/", indexRoutes);
