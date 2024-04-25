@@ -35,7 +35,7 @@ export const query1 = async (req, res) =>{
 
     var query1 = conn.query(
 
-        `SELECT idUsuario,Nombre,Apellido,Password,Tipo FROM Usuario WHERE Correo = '${req.body.Correo}';`,
+        `SELECT idUsuario,Nombre,Apellido,Password,Tipo,Foto FROM Usuario WHERE Correo = '${req.body.Correo}';`,
         function (err, result){
             if(err) throw err
 
@@ -48,7 +48,8 @@ export const query1 = async (req, res) =>{
                         res.send({"idUsuario": result[0].idUsuario, 
                                     "Nombre": result[0].Nombre,
                                     "Apellido" : result[0].Apellido,
-                                    "Tipo": result[0].Tipo})
+                                    "Tipo": result[0].Tipo,
+                                    "Foto": result[0].Foto})
                     }else{
                         res.send({"message" : "Correo o Password Incorrecto"})
                     }

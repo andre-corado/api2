@@ -120,3 +120,66 @@ export const getPaginaWatchlist= async (req, res) => {
         return res.status(500).json({message:"Error: Algo ha salido mal.", Paginas: -1, error});
     }
 }
+
+
+//@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+
+
+// Obtener paginas del catalogo por busqueda
+export const getNumPagesBusqueda777 = async (req, res) => {
+    try{
+        const {Nombre} = req.body;
+
+        let query = ""
+        query = "Select CEILING(Count(idActor)/10) as paginas from Actor Where UPPER(Nombre) LIKE '%"+Nombre.toUpperCase()+"%';"
+        const [Select] = await pool.query(query);
+
+        return res.status(200).json({message:"Numero de paginas obtenido exitosamente", Paginas: parseInt(Select[0].paginas)});
+    }catch (error) {//Error si algo sale mal
+        console.log(error)
+        return res.status(500).json({message:"Error: Algo ha salido mal.", Paginas: -1, error});
+    }
+}
+
+export const getPaginaPeliculaBusqueda777 = async (req, res) => {
+    let numPeliculas = 10;
+    try{
+        const {Nombre} = req.body;
+        const pagina = req.params.pagina;
+
+        let query = "";
+        query = "Select idActor, Nombre, Foto, Fecha_Nacimiento from Actor Where UPPER(Nombre) LIKE '%"+Nombre.toUpperCase()+"%' limit "+((pagina-1)*numPeliculas)+","+ numPeliculas;
+        console.log(query)
+        const [Select] = await pool.query(query);
+
+        return res.status(200).json({message:"Actores obtenidas exitosamente.", Peliculas: Select});
+    }catch (error) {//Error si algo sale mal
+        console.log(error)
+        return res.status(500).json({message:"Error: Algo ha salido mal.", Paginas: -1, error});
+    }
+}
+
+// Obtener paginas del catalogo principal
+export const getNumPages777 = async (req, res) => {
+    try{
+        const [Select] = await pool.query("Select CEILING(Count(idActor)/10) as paginas from Actor;");
+
+        return res.status(200).json({message:"Numero de paginas obtenido exitosamente", Paginas: parseInt(Select[0].paginas)});
+    }catch (error) {//Error si algo sale mal
+        console.log(error)
+        return res.status(500).json({message:"Error: Algo ha salido mal.", Paginas: -1, error});
+    }
+}
+
+export const getPaginaPelicula777 = async (req, res) => {
+    let numPeliculas = 10;
+    try{
+        const pagina = req.params.pagina
+        const [Select] = await pool.query("Select idActor, Nombre, Foto, Fecha_Nacimiento from Actor limit ?,?;", 
+            [((pagina-1)*numPeliculas), numPeliculas]);
+
+        return res.status(200).json({message:"Actores obtenidas exitosamente.", Peliculas: Select});
+    }catch (error) {//Error si algo sale mal
+        return res.status(500).json({message:"Error: Algo ha salido mal.", error: error, Peliculas: []});
+    }
+}
