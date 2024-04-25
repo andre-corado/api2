@@ -10,4 +10,4 @@ node_modules/
 
 *.sql
 .DS_Store
-/utils/.env
+.env
