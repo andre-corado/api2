@@ -4,6 +4,6 @@ const router = Router();
 
 //Rutas van aqui ----------
 router.post("/getCalificacion", query5);
-router.get("/getRating", getAverageRating);
+router.post("/getRating", getAverageRating);
 
 export default router;
