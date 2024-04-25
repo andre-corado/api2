@@ -1,6 +1,7 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import bodyParser from "body-parser";
 
 import indexRoutes from "./routes/index.routes.js";
 import unoRoutes from "./routes/3.routes.js";
@@ -27,6 +28,8 @@ var corsOptions = {
 app.use(morgan("dev"));
 app.use(express.json());
 app.use(cors(corsOptions));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 // Routes
 app.use("/", indexRoutes);
